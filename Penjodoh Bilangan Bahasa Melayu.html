@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjodoh Bilangan Bahasa Melayu - Tahun 4, 5 & 6</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Nunito for playful typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        pastelBlue: '#E0F2FE',
+                        pastelPurple: '#F3E8FF',
+                        pastelGreen: '#DCFCE7',
+                        pastelPink: '#FCE7F3',
+                        pastelYellow: '#FEF9C3',
+                        pastelOrange: '#FFEDD5',
+                        brandPrimary: '#6366F1',
+                        brandSecondary: '#8B5CF6',
+                        brandAccent: '#EC4899',
+                    },
+                    animation: {
+                        shake: 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        pulseFast: 'pulse 0.6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        bounceGentle: 'bounceGentle 2s infinite',
+                    },
+                    keyframes: {
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-2px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(4px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-6px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(6px, 0, 0)' },
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #e0f2fe 50%, #fce7f3 100%);
+            min-height: 100vh;
+        }
+
+        /* Custom styling for printable certificate */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #sijilModal, #sijilModal * {
+                visibility: visible;
+            }
+            #sijilModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between p-3 sm:p-6 selection:bg-purple-200">
+
+    <!-- Tajuk Atas -->
+    <header class="max-w-4xl mx-auto w-full text-center my-2 sm:my-4">
+        <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-purple-100 mb-2">
+            <span class="text-xl">📚</span>
+            <span class="text-xs sm:text-sm font-extrabold tracking-wide uppercase text-indigo-600">Bahasa Melayu (Tahun 4, 5 & 6)</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-black text-gray-800 tracking-tight drop-shadow-sm flex items-center justify-center gap-2">
+            ✏️ Penjodoh Bilangan 🌟
+        </h1>
+    </header>
+
+    <main class="max-w-3xl mx-auto w-full flex-grow flex items-center justify-center my-2">
+
+        <!-- SKRIN 1: BORANG MAKLUMAT & ARAHAN -->
+        <section id="skrinPermulaan" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-white/60 transition-all">
+            <div class="text-center mb-6">
+                <div class="text-5xl mb-3 animate-bounceGentle">🎯</div>
+                <h2 class="text-2xl font-bold text-gray-800">Selamat Datang ke Kuiz Interaktif!</h2>
+                <p class="text-gray-600 text-sm sm:text-base mt-1">Uji kefahaman anda dalam topik Penjodoh Bilangan Bahasa Melayu.</p>
+            </div>
+
+            <!-- Arahan Ringkas -->
+            <div class="bg-pastelPurple/60 border border-purple-200 rounded-2xl p-4 mb-6 text-sm sm:text-base text-gray-700">
+                <h3 class="font-bold text-indigo-900 flex items-center gap-2 mb-2">
+                    <span class="text-lg">📋</span> Arahan Permainan:
+                </h3>
+                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                    <li>Sila isi <strong>Nama</strong> dan <strong>Kelas</strong> anda terlebih dahulu.</li>
+                    <li>Terdapat <strong>20 soalan</strong> aneka pilihan (4 pilihan bagi setiap soalan).</li>
+                    <li>Masa menjawab ialah <strong>30 saat</strong> untuk setiap soalan.</li>
+                    <li>Skor dan Sijil Pencapaian akan dijana selepas kuiz tamat!</li>
+                </ul>
+            </div>
+
+            <!-- Borang Input -->
+            <div class="space-y-4 max-w-md mx-auto">
+                <div>
+                    <label for="inputNama" class="block text-sm font-bold text-gray-700 mb-1">Nama Penuh Murid <span class="text-red-500">*</span></label>
+                    <input type="text" id="inputNama" placeholder="Contoh: Muhammad Amir" 
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition outline-none font-semibold text-gray-800">
+                </div>
+
+                <div>
+                    <label for="inputKelas" class="block text-sm font-bold text-gray-700 mb-1">Kelas <span class="text-red-500">*</span></label>
+                    <input type="text" id="inputKelas" placeholder="Contoh: 5 Cemerlang" 
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition outline-none font-semibold text-gray-800">
+                </div>
+
+                <p id="ralatInput" class="text-red-500 text-xs text-center font-bold hidden">Sila lengkapkan kedua-dua ruangan Nama dan Kelas!</p>
+
+                <button id="btnMula" disabled 
+                    class="w-full py-4 rounded-xl bg-gray-300 text-gray-500 font-extrabold text-lg shadow-md cursor-not-allowed transition duration-200 hover:shadow-lg flex items-center justify-center gap-2">
+                    🚀 Mula Kuiz
+                </button>
+            </div>
+
+            <!-- Rekod Percubaan Lepas Ringkas -->
+            <div id="sejarahPercubaanContainer" class="mt-8 pt-6 border-t border-gray-100 hidden">
+                <h4 class="text-xs font-extrabold uppercase text-gray-400 tracking-wider text-center mb-3">🕒 Rekod Percubaan Terakhir</h4>
+                <div id="senaraiSejarah" class="space-y-2 max-h-32 overflow-y-auto text-xs sm:text-sm"></div>
+            </div>
+        </section>
+
+        <!-- SKRIN 2: SOALAN KUIZ -->
+        <section id="skrinKuiz" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-5 sm:p-8 shadow-xl border border-white/60 hidden relative overflow-hidden transition-all">
+            
+            <!-- Bar Atas: Kemajuan & Pemasa -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-100">
+                <!-- Info Murid & Soalan -->
+                <div>
+                    <div class="text-xs text-indigo-600 font-bold uppercase tracking-wider" id="displayInfoMurid">Ahmad - 5 Bijak</div>
+                    <div class="text-lg sm:text-xl font-black text-gray-800 flex items-center gap-1">
+                        Soalan <span id="soalanSemasaNum" class="text-indigo-600">1</span> / <span id="jumlahSoalanNum">20</span>
+                    </div>
+                </div>
+
+                <!-- Pemasa 30 Saat -->
+                <div id="badgePemasa" class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-200 font-black text-lg transition-colors duration-300">
+                    <span class="text-xl">⏱️</span>
+                    <span id="masaTinggal">30</span>s
+                </div>
+            </div>
+
+            <!-- Bar Kemajuan UI -->
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-6 overflow-hidden">
+                <div id="barKemajuan" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- Kad Soalan -->
+            <div class="bg-pastelPurple/30 border border-purple-100 rounded-2xl p-5 sm:p-6 mb-6">
+                <div class="text-xs font-bold text-indigo-500 uppercase tracking-wide mb-1">Isi tempat kosong dengan penjodoh bilangan yang betul:</div>
+                <h3 id="teksSoalan" class="text-lg sm:text-2xl font-bold text-gray-800 leading-snug">
+                    Soalan akan dipaparkan di sini...
+                </h3>
+            </div>
+
+            <!-- Pilihan Jawapan Grid -->
+            <div id="bekasPilihan" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <!-- Butang jawapan akan dijana secara dinamik oleh JS -->
+            </div>
+
+            <!-- Kotak Maklum Balas Jawapan -->
+            <div id="kotakMaklumBalas" class="mt-5 p-4 rounded-2xl hidden transition-all duration-300 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span id="ikonMaklumBalas" class="text-3xl"></span>
+                    <div>
+                        <div id="tajukMaklumBalas" class="font-extrabold text-base"></div>
+                        <div id="peneranganMaklumBalas" class="text-sm font-medium"></div>
+                    </div>
+                </div>
+                <button id="btnSoalanSeterusnya" class="px-5 py-2.5 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl shadow-md transition text-sm flex items-center gap-1">
+                    Seterusnya ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- SKRIN 3: KEPUTUSAN & SEMAKAN -->
+        <section id="skrinKeputusan" class="w-full bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-white/60 hidden transition-all">
+            
+            <!-- Kad Laporan Skor Ringkas -->
+            <div class="text-center pb-6 border-b border-gray-200">
+                <div id="lencanaTahniah" class="text-6xl mb-2 animate-bounceGentle">🏆</div>
+                <h2 id="statusPencapaian" class="text-2xl sm:text-3xl font-black text-gray-800">Syabas & Tahniah!</h2>
+                <p id="namaMuridKeputusan" class="text-gray-600 font-semibold mt-1">Ahmad (5 Cemerlang)</p>
+
+                <!-- Skor Paparan Utama -->
+                <div class="my-6 inline-block bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-8 py-5 rounded-3xl shadow-lg transform transition hover:scale-105">
+                    <div class="text-xs uppercase tracking-widest font-extrabold opacity-80">JUMLAH SKOR ANDA</div>
+                    <div class="text-4xl sm:text-5xl font-black my-1" id="paparanSkor">18 / 20</div>
+                    <div class="text-sm font-bold bg-white/20 px-3 py-1 rounded-full inline-block" id="peratusSkor">90%</div>
+                </div>
+
+                <!-- Butang Tindakan Utama -->
+                <div class="flex flex-wrap justify-center gap-3 mt-2">
+                    <button id="btnJanaSijil" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-xl shadow-md transition flex items-center gap-2 transform active:scale-95 hidden">
+                        📜 Jana Sijil Pencapaian
+                    </button>
+                    <button id="btnCubaLagi" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl shadow-md transition flex items-center gap-2 transform active:scale-95">
+                        🔄 Cuba Lagi
+                    </button>
+                    <button id="btnKembaliMenu" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-extrabold rounded-xl transition flex items-center gap-2 transform active:scale-95">
+                        🏠 Kembali ke Menu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Semakan Penuh Soalan -->
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🔍</span> Semakan Penuh Jawapan
+                </h3>
+                <div id="senaraiSemakan" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+                    <!-- Senarai soalan dan status betul/salah dijana oleh JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL SIJIL PENCAPAIAN (BOLEH DICETAK) -->
+    <div id="sijilModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-10 max-w-2xl w-full border-8 border-indigo-200 shadow-2xl relative text-center">
+            
+            <!-- Butang Tutup Modal (Tidak dicetak) -->
+            <button id="btnTutupSijil" class="no-print absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">
+                ✕
+            </button>
+
+            <!-- Kandungan Sijil -->
+            <div class="border-2 border-dashed border-indigo-300 p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-purple-50/50 to-white">
+                <div class="text-4xl mb-2">🎓</div>
+                <div class="text-indigo-600 font-black tracking-widest text-xs uppercase mb-1">KEMENTERIAN PENDIDIKAN MALAYSIA</div>
+                <h2 class="text-2xl sm:text-4xl font-black text-gray-800 uppercase tracking-tight mb-2">SIJIL PENCAPAIAN</h2>
+                <p class="text-xs sm:text-sm text-gray-500 font-semibold mb-6">Dengan ini diperakukan bahawa</p>
+
+                <h3 id="sijilNamaMurid" class="text-2xl sm:text-3xl font-black text-indigo-900 border-b-2 border-indigo-400 inline-block px-6 py-1 mb-2">
+                    NAMA MURID
+                </h3>
+                <p id="sijilKelasMurid" class="text-sm font-bold text-gray-600 mb-6">Kelas: 5 Cemerlang</p>
+
+                <p class="text-gray-700 text-sm sm:text-base max-w-lg mx-auto mb-6">
+                    Telah berjaya menyempurnakan Kuiz Interaktif <br>
+                    <strong class="text-indigo-700">Penjodoh Bilangan Bahasa Melayu (Tahun 4, 5 & 6)</strong><br>
+                    dengan pencapaian cemerlang:
+                </p>
+
+                <div class="inline-flex items-center gap-4 bg-purple-100 px-6 py-3 rounded-2xl border border-purple-200 mb-6">
+                    <div>
+                        <div class="text-xs text-purple-700 font-extrabold uppercase">Markah Keseluruhan</div>
+                        <div id="sijilSkor" class="text-2xl font-black text-purple-900">18 / 20 (90%)</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200 text-xs text-gray-500">
+                    <div class="text-left">
+                        <div>Tarikh: <span id="sijilTarikh" class="font-bold text-gray-700">12/10/2026</span></div>
+                        <div>Status: <span class="font-bold text-emerald-600">LULUS CEMERLANG</span></div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-gray-800">Sistem Kuiz Bahasa Melayu</div>
+                        <div class="text-[10px] text-gray-400">Pengesahan Digital</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Butang Cetak (Tidak dicetak) -->
+            <div class="no-print mt-6 flex justify-center gap-3">
+                <button onclick="window.print()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl shadow-md transition flex items-center gap-2">
+                    🖨️ Cetak / Simpan PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-gray-500 my-4">
+        <p>Aplikasi Kuiz Interaktif Penjodoh Bilangan Bahasa Melayu &copy; Sekolah Rendah (Tahun 4, 5 & 6)</p>
+    </footer>
+
+    <script>
+        /*
+        ===================================================================
+        BANK SOALAN PENJODOH BILANGAN BAHASA MELAYU (TAHUN 4, 5 & 6)
+        ===================================================================
+        Anda boleh menambah atau mengemas kini soalan di bawah.
+        Format soalan:
+        {
+            soalan: "Teks soalan lengkap...",
+            pilihan: ["Pilihan A", "Pilihan B", "Pilihan C", "Pilihan D"],
+            jawapanBetul: "Jawapan yang betul secara tepat"
+        }
+        */
+        const BANK_SOALAN = [
+            {
+                soalan: "Ibu membeli dua ______ kain batik yang amat halus buatannya dari Terengganu.",
+                pilihan: ["helai", "keping", "sebidang", "laras"],
+                jawapanBetul: "helai"
+            },
+            {
+                soalan: "Pihak polis menjumpai dua ______ pistol yang disembunyikan oleh penjenayah di dalam semak.",
+                pilihan: ["laras", "pucuk", "bilah", "batang"],
+                jawapanBetul: "laras"
+            },
+            {
+                soalan: "Mak Cik Aminah meletakkan se ______ garam ke dalam kuah sup yang agak tawar itu.",
+                pilihan: ["jemput", "genggam", "cubit", "sudu"],
+                jawapanBetul: "jemput"
+            },
+            {
+                soalan: "Pemburu itu tersempung melihat se ______ burung terbang tinggi di udara.",
+                pilihan: ["kawan", "kelompok", "kumpulan", "kandang"],
+                jawapanBetul: "kawan"
+            },
+            {
+                soalan: "Nenek memotong beberapa ______ roti untuk dijadikan sarapan pagi kami.",
+                pilihan: ["keping", "ketul", "potong", "helai"],
+                jawapanBetul: "keping"
+            },
+            {
+                soalan: "Abang membeli se ______ kunci baharu untuk menggantikan kunci rumah yang telah hilang.",
+                pilihan: ["gugus", "jambak", "ikat", "rangkai"],
+                jawapanBetul: "gugus"
+            },
+            {
+                soalan: "Datuk membakar tiga ______ sate ayam yang dibeli dari gerai Pak Samad.",
+                pilihan: ["cucuk", "batang", "urat", "utas"],
+                jawapanBetul: "cucuk"
+            },
+            {
+                soalan: "Posmen itu menyerahkan se ______ surat rasmi daripada pihak sekolah kepada ayah.",
+                pilihan: ["pucuk", "helai", "keping", "naskhah"],
+                jawapanBetul: "pucuk"
+            },
+            {
+                soalan: "Kakak menyusun beberapa ______ bunga mawar yang harum di dalam pasu hiasan.",
+                pilihan: ["tangkai", "kuntum", "jambak", "pohon"],
+                jawapanBetul: "tangkai"
+            },
+            {
+                soalan: "Pak Cik Karim menebang tiga ______ pokok pisang di belakang rumahnya.",
+                pilihan: ["batang", "pohon", "rumpun", "sikat"],
+                jawapanBetul: "batang"
+            },
+            {
+                soalan: "Peniaga itu menjual se ______ serai segar yang dipetik dari kebunnya.",
+                pilihan: ["rumpun", "berkas", "ikat", "gugus"],
+                jawapanBetul: "rumpun"
+            },
+            {
+                soalan: "Nelayan itu menggunakan se ______ jala untuk menangkap ikan di sungai.",
+                pilihan: ["rawan", "bidang", "utas", "lembar"],
+                jawapanBetul: "rawan"
+            },
+            {
+                soalan: "Adik menggunakan se ______ gunting untuk memotong kertas warna itu.",
+                pilihan: ["bilah", "pucuk", "batang", "bentuk"],
+                jawapanBetul: "bilah"
+            },
+            {
+                soalan: "Mak Cik Mah menyajikan se ______ sirih kepada tetamu yang berkunjung ke rumahnya.",
+                pilihan: ["kapur", "helai", "genggam", "daun"],
+                jawapanBetul: "kapur"
+            },
+            {
+                soalan: "Nelayan itu menaiki se ______ sampan untuk menangkap ikan di tebing laut.",
+                pilihan: ["buah", "unit", "biji", "papan"],
+                jawapanBetul: "buah"
+            },
+            {
+                soalan: "Penyajak itu mendeklamasikan se ______ puisi yang amat mendalam maksudnya.",
+                pilihan: ["rangkap", "patah", "baris", "untung"],
+                jawapanBetul: "rangkap"
+            },
+            {
+                soalan: "Kakak memakai se ______ rantai mutiara yang cantik semasa majlis perkahwinannya.",
+                pilihan: ["untai", "utas", "lingkar", "bentuk"],
+                jawapanBetul: "untai"
+            },
+            {
+                soalan: "Petani itu mengikat beberapa ______ kayu api untuk dibawa pulang ke rumah.",
+                pilihan: ["berkas", "ikat", "gugus", "laras"],
+                jawapanBetul: "berkas"
+            },
+            {
+                soalan: "Salmah membeli se ______ benang warna merah untuk menjahit bajunya yang koyak.",
+                pilihan: ["buku", "gulung", "lembar", "utas"],
+                jawapanBetul: "buku"
+            },
+            {
+                soalan: "Pemuda itu makan se ______ tembikai yang manis dan sejuk di tepi pantai.",
+                pilihan: ["potong", "hiris", "ulas", "biji"],
+                jawapanBetul: "potong"
+            }
+        ];
+
+        // PEMATUHAN AMBANG LULUS (Contoh: 60% = 12/20)
+        const AMBANG_LULUS_PERATUSA = 60;
+
+        // Pembolehubah Keadaan Permainan
+        let soalanKuiz = [];
+        let indeksSoalanSemasa = 0;
+        let skorPengguna = 0;
+        let masaMulaSoalan = 30;
+        let bakiMasa = 30;
+        let pemasaInterval = null;
+        let namaPengguna = "";
+        let kelasPengguna = "";
+        let rekodJawapanPengguna = []; // Merekod jawapan murid bagi setiap soalan
+        let jawapanDiklik = false;
+
+        // Sintesis Bunyi Menggunakan Web Audio API (Tanpa pautan fail luar)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        // Bunyi Loceng (Jawapan Betul)
+        function mainkanBunyiBetul() {
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc1.type = 'sine';
+                osc2.type = 'sine';
+
+                osc1.frequency.setValueAtTime(523.25, now); // C5
+                osc2.frequency.setValueAtTime(659.25, now); // E5
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.8);
+                osc2.stop(now + 0.8);
+            } catch(e) {
+                console.log("Audio not allowed yet", e);
+            }
+        }
+
+        // Bunyi Buzzer (Jawapan Salah)
+        function mainkanBunyiSalah() {
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.4);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch(e) {
+                console.log("Audio error", e);
+            }
+        }
+
+        // Fungsi Mengacak Array (Fisher-Yates Shuffle)
+        function acakArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Elemen-elemen DOM
+        const inputNama = document.getElementById('inputNama');
+        const inputKelas = document.getElementById('inputKelas');
+        const btnMula = document.getElementById('btnMula');
+        const ralatInput = document.getElementById('ralatInput');
+
+        const skrinPermulaan = document.getElementById('skrinPermulaan');
+        const skrinKuiz = document.getElementById('skrinKuiz');
+        const skrinKeputusan = document.getElementById('skrinKeputusan');
+
+        const displayInfoMurid = document.getElementById('displayInfoMurid');
+        const soalanSemasaNum = document.getElementById('soalanSemasaNum');
+        const jumlahSoalanNum = document.getElementById('jumlahSoalanNum');
+        const barKemajuan = document.getElementById('barKemajuan');
+        const badgePemasa = document.getElementById('badgePemasa');
+        const masaTinggal = document.getElementById('masaTinggal');
+        const teksSoalan = document.getElementById('teksSoalan');
+        const bekasPilihan = document.getElementById('bekasPilihan');
+
+        const kotakMaklumBalas = document.getElementById('kotakMaklumBalas');
+        const ikonMaklumBalas = document.getElementById('ikonMaklumBalas');
+        const tajukMaklumBalas = document.getElementById('tajukMaklumBalas');
+        const peneranganMaklumBalas = document.getElementById('peneranganMaklumBalas');
+        const btnSoalanSeterusnya = document.getElementById('btnSoalanSeterusnya');
+
+        // Pengesahan Input Nama & Kelas
+        function semakPengesahanInput() {
+            const namaValid = inputNama.value.trim().length > 0;
+            const kelasValid = inputKelas.value.trim().length > 0;
+
+            if (namaValid && kelasValid) {
+                btnMula.disabled = false;
+                btnMula.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                btnMula.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700', 'cursor-pointer');
+                ralatInput.classList.add('hidden');
+            } else {
+                btnMula.disabled = true;
+                btnMula.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                btnMula.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700', 'cursor-pointer');
+            }
+        }
+
+        inputNama.addEventListener('input', semakPengesahanInput);
+        inputKelas.addEventListener('input', semakPengesahanInput);
+
+        // Mula Kuiz
+        btnMula.addEventListener('click', () => {
+            namaPengguna = inputNama.value.trim();
+            kelasPengguna = inputKelas.value.trim();
+
+            if (!namaPengguna || !kelasPengguna) {
+                ralatInput.classList.remove('hidden');
+                return;
+            }
+
+            // Sedia Acak Soalan & Jawapan
+            soalanKuiz = acakArray(BANK_SOALAN).map(q => ({
+                soalan: q.soalan,
+                pilihan: acakArray(q.pilihan),
+                jawapanBetul: q.jawapanBetul
+            }));
+
+            indeksSoalanSemasa = 0;
+            skorPengguna = 0;
+            rekodJawapanPengguna = [];
+
+            // Kemaskini Paparan UI
+            displayInfoMurid.textContent = `${namaPengguna} • ${kelasPengguna}`;
+            jumlahSoalanNum.textContent = soalanKuiz.length;
+
+            skrinPermulaan.classList.add('hidden');
+            skrinKeputusan.classList.add('hidden');
+            skrinKuiz.classList.remove('hidden');
+
+            paparSoalan();
+        });
+
+        // Papar Soalan
+        function paparSoalan() {
+            jawapanDiklik = false;
+            clearInterval(pemasaInterval);
+
+            const dataSoalan = soalanKuiz[indeksSoalanSemasa];
+            soalanSemasaNum.textContent = indeksSoalanSemasa + 1;
+            teksSoalan.textContent = dataSoalan.soalan;
+
+            // Kemaskini Bar Kemajuan
+            const peratusKemajuan = ((indeksSoalanSemasa) / soalanKuiz.length) * 100;
+            barKemajuan.style.width = `${peratusKemajuan}%`;
+
+            // Bersihkan pilihan lama & maklum balas
+            bekasPilihan.innerHTML = '';
+            kotakMaklumBalas.classList.add('hidden');
+
+            // Set Pilihan Jawapan
+            const abjad = ['A', 'B', 'C', 'D'];
+            dataSoalan.pilihan.forEach((pilihan, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `pilihanBtn w-full text-left p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:bg-purple-50/50 transition-all font-bold text-gray-700 flex items-center gap-3 text-base sm:text-lg cursor-pointer transform active:scale-[0.98] shadow-sm`;
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-gray-100 text-indigo-600 font-extrabold flex items-center justify-center text-sm border border-gray-200">${abjad[idx]}</span>
+                    <span>${pilihan}</span>
+                `;
+                btn.onclick = () => semakJawapan(pilihan, btn);
+                bekasPilihan.appendChild(btn);
+            });
+
+            // Mulakan Pemasa 30 saat
+            mulakanPemasa();
+        }
+
+        // Mulakan Pemasa
+        function mulakanPemasa() {
+            bakiMasa = masaMulaSoalan;
+            kemaskiniPaparanPemasa();
+
+            pemasaInterval = setInterval(() => {
+                bakiMasa--;
+                kemaskiniPaparanPemasa();
+
+                if (bakiMasa <= 0) {
+                    clearInterval(pemasaInterval);
+                    masatamatOtomatis();
+                }
+            }, 1000);
+        }
+
+        function kemaskiniPaparanPemasa() {
+            masaTinggal.textContent = bakiMasa;
+            if (bakiMasa <= 5) {
+                badgePemasa.className = "flex items-center gap-2 px-4 py-2 rounded-2xl bg-red-100 text-red-600 border border-red-300 font-black text-lg animate-pulseFast";
+            } else {
+                badgePemasa.className = "flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-200 font-black text-lg transition-colors duration-300";
+            }
+        }
+
+        // Semak Jawapan Pengguna
+        function semakJawapan(jawapanDipilih, butangDipilih) {
+            if (jawapanDiklik) return;
+            jawapanDiklik = true;
+            clearInterval(pemasaInterval);
+
+            const dataSoalan = soalanKuiz[indeksSoalanSemasa];
+            const adakahBetul = (jawapanDipilih === dataSoalan.jawapanBetul);
+
+            // Nyahaktifkan semua butang pilihan
+            const semuaButang = bekasPilihan.querySelectorAll('.pilihanBtn');
+            semuaButang.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed', 'opacity-80');
+            });
+
+            // Merekod Jawapan
+            rekodJawapanPengguna.push({
+                soalan: dataSoalan.soalan,
+                jawapanBetul: dataSoalan.jawapanBetul,
+                jawapanDipilih: jawapanDipilih,
+                adakahBetul: adakahBetul
+            });
+
+            if (adakahBetul) {
+                skorPengguna++;
+                mainkanBunyiBetul();
+
+                // Animasi Confetti
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: { y: 0.7 }
+                    });
+                }
+
+                butangDipilih.classList.remove('bg-white', 'border-gray-200');
+                butangDipilih.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+
+                kotakMaklumBalas.className = "mt-5 p-4 rounded-2xl transition-all duration-300 flex items-center justify-between bg-emerald-100 border border-emerald-300 text-emerald-900";
+                ikonMaklumBalas.textContent = "🎉";
+                tajukMaklumBalas.textContent = "Tepat Sekali!";
+                peneranganMaklumBalas.textContent = `Jawapan anda (${jawapanDipilih}) adalah betul.`;
+            } else {
+                mainkanBunyiSalah();
+
+                // Animasi gegaran skrin kuiz
+                skrinKuiz.classList.add('animate-shake');
+                setTimeout(() => skrinKuiz.classList.remove('animate-shake'), 500);
+
+                butangDipilih.classList.remove('bg-white', 'border-gray-200');
+                butangDipilih.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+
+                // Cari dan tandakan jawapan betul
+                semuaButang.forEach(btn => {
+                    if (btn.textContent.includes(dataSoalan.jawapanBetul)) {
+                        btn.classList.remove('bg-white');
+                        btn.classList.add('bg-emerald-50', 'border-emerald-400');
+                    }
+                });
+
+                kotakMaklumBalas.className = "mt-5 p-4 rounded-2xl transition-all duration-300 flex items-center justify-between bg-rose-100 border border-rose-300 text-rose-900";
+                ikonMaklumBalas.textContent = "❌";
+                tajukMaklumBalas.textContent = "Kurang Tepat!";
+                peneranganMaklumBalas.textContent = `Jawapan betul ialah: ${dataSoalan.jawapanBetul}`;
+            }
+
+            kotakMaklumBalas.classList.remove('hidden');
+        }
+
+        // Apabila masa habis
+        function masatamatOtomatis() {
+            if (jawapanDiklik) return;
+            jawapanDiklik = true;
+
+            const dataSoalan = soalanKuiz[indeksSoalanSemasa];
+            mainkanBunyiSalah();
+
+            const semuaButang = bekasPilihan.querySelectorAll('.pilihanBtn');
+            semuaButang.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed', 'opacity-60');
+                if (btn.textContent.includes(dataSoalan.jawapanBetul)) {
+                    btn.classList.remove('bg-white');
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                }
+            });
+
+            rekodJawapanPengguna.push({
+                soalan: dataSoalan.soalan,
+                jawapanBetul: dataSoalan.jawapanBetul,
+                jawapanDipilih: "Masa Habis ⏱️",
+                adakahBetul: false
+            });
+
+            kotakMaklumBalas.className = "mt-5 p-4 rounded-2xl transition-all duration-300 flex items-center justify-between bg-amber-100 border border-amber-300 text-amber-900";
+            ikonMaklumBalas.textContent = "⏱️";
+            tajukMaklumBalas.textContent = "Masa Habis!";
+            peneranganMaklumBalas.textContent = `Jawapan sebenar ialah: ${dataSoalan.jawapanBetul}`;
+            kotakMaklumBalas.classList.remove('hidden');
+        }
+
+        // Ke Soalan Seterusnya
+        btnSoalanSeterusnya.addEventListener('click', () => {
+            indeksSoalanSemasa++;
+            if (indeksSoalanSemasa < soalanKuiz.length) {
+                paparSoalan();
+            } else {
+                tamatKuizDanPaparKeputusan();
+            }
+        });
+
+        // Tamat Kuiz & Papar Keputusan
+        function tamatKuizDanPaparKeputusan() {
+            skrinKuiz.classList.add('hidden');
+            skrinKeputusan.classList.remove('hidden');
+
+            const jumlahSoalan = soalanKuiz.length;
+            const peratus = Math.round((skorPengguna / jumlahSoalan) * 100);
+
+            document.getElementById('namaMuridKeputusan').textContent = `${namaPengguna} (${kelasPengguna})`;
+            document.getElementById('paparanSkor').textContent = `${skorPengguna} / ${jumlahSoalan}`;
+            document.getElementById('peratusSkor').textContent = `${peratus}%`;
+
+            const lencanaTahniah = document.getElementById('lencanaTahniah');
+            const statusPencapaian = document.getElementById('statusPencapaian');
+            const btnJanaSijil = document.getElementById('btnJanaSijil');
+
+            if (peratus >= AMBANG_LULUS_PERATUSA) {
+                lencanaTahniah.textContent = "🏆";
+                statusPencapaian.textContent = "Tahniah & Syabas!";
+                btnJanaSijil.classList.remove('hidden');
+                
+                // Tambah tembakan confetti perayaan
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+                }
+            } else {
+                lencanaTahniah.textContent = "💪";
+                statusPencapaian.textContent = "Usaha Lagi, Anda Boleh!";
+                btnJanaSijil.classList.add('hidden');
+            }
+
+            // Bina Semakan Penuh Soalan
+            const senaraiSemakan = document.getElementById('senaraiSemakan');
+            senaraiSemakan.innerHTML = '';
+
+            rekodJawapanPengguna.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = `p-4 rounded-2xl border ${item.adakahBetul ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'} text-sm`;
+                div.innerHTML = `
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <span class="font-bold text-gray-800">${idx + 1}. ${item.soalan}</span>
+                        <span class="text-lg">${item.adakahBetul ? '✅' : '❌'}</span>
+                    </div>
+                    <div class="text-xs space-y-0.5">
+                        <div class="${item.adakahBetul ? 'text-emerald-700 font-bold' : 'text-rose-600'}">
+                            Jawapan Anda: <strong>${item.jawapanDipilih}</strong>
+                        </div>
+                        ${!item.adakahBetul ? `<div class="text-emerald-700 font-bold">Jawapan Sebenar: ${item.jawapanBetul}</div>` : ''}
+                    </div>
+                `;
+                senaraiSemakan.appendChild(div);
+            });
+
+            // Simpan Rekod ke localStorage
+            simpanPercubaan({
+                nama: namaPengguna,
+                kelas: kelasPengguna,
+                skor: skorPengguna,
+                jumlah: jumlahSoalan,
+                peratus: peratus,
+                tarikh: new Date().toLocaleDateString('ms-MY')
+            });
+        }
+
+        // Pengurusan LocalStorage untuk Sejarah Percubaan
+        function simpanPercubaan(rekod) {
+            try {
+                let sejarah = JSON.parse(localStorage.getItem('penjodoh_bilangan_rekod')) || [];
+                sejarah.unshift(rekod); // tambah di hadapan
+                sejarah = sejarah.slice(0, 5); // simpan 5 rekod terkini sahaja
+                localStorage.setItem('penjodoh_bilangan_rekod', JSON.stringify(sejarah));
+                muatSejarahPercubaan();
+            } catch (e) {
+                console.log("Gagal menyimpan ke localStorage", e);
+            }
+        }
+
+        function muatSejarahPercubaan() {
+            try {
+                const sejarah = JSON.parse(localStorage.getItem('penjodoh_bilangan_rekod')) || [];
+                const container = document.getElementById('sejarahPercubaanContainer');
+                const senarai = document.getElementById('senaraiSejarah');
+
+                if (sejarah.length > 0) {
+                    container.classList.remove('hidden');
+                    senarai.innerHTML = sejarah.map(item => `
+                        <div class="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-200">
+                            <div>
+                                <span class="font-bold text-gray-800">${item.nama}</span> 
+                                <span class="text-xs text-gray-500">(${item.kelas})</span>
+                            </div>
+                            <div class="font-black text-indigo-600">${item.skor}/${item.jumlah} (${item.peratus}%)</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                console.log("Gagal membaca localStorage", e);
+            }
+        }
+
+        // Modal Sijil
+        document.getElementById('btnJanaSijil').addEventListener('click', () => {
+            document.getElementById('sijilNamaMurid').textContent = namaPengguna.toUpperCase();
+            document.getElementById('sijilKelasMurid').textContent = `Kelas: ${kelasPengguna}`;
+            document.getElementById('sijilSkor').textContent = `${skorPengguna} / ${soalanKuiz.length} (${Math.round((skorPengguna/soalanKuiz.length)*100)}%)`;
+            document.getElementById('sijilTarikh').textContent = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            document.getElementById('sijilModal').classList.remove('hidden');
+        });
+
+        document.getElementById('btnTutupSijil').addEventListener('click', () => {
+            document.getElementById('sijilModal').classList.add('hidden');
+        });
+
+        // Butang Navigasi
+        document.getElementById('btnCubaLagi').addEventListener('click', () => {
+            btnMula.click();
+        });
+
+        document.getElementById('btnKembaliMenu').addEventListener('click', () => {
+            skrinKeputusan.classList.add('hidden');
+            skrinKuiz.classList.add('hidden');
+            skrinPermulaan.classList.remove('hidden');
+        });
+
+        // Muat Sejarah Percubaan pada Permulaan
+        window.addEventListener('DOMContentLoaded', () => {
+            muatSejarahPercubaan();
+        });
+    </script>
+</body>
+</html>
